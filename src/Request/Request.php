@@ -154,6 +154,7 @@ class Request
         $headers = [
             'Connection: keep-alive',
             'Content-Type: application/json',
+	        'Authorization: Bearer ' . $this->getParameters()->getAuth('bearer')
         ];
 
         if ($modified !== null) {
@@ -175,19 +176,7 @@ class Request
      */
     protected function prepareEndpoint($url)
     {
-        if ($this->v1 === false) {
-            $query = http_build_query(array_merge($this->parameters->getGet(), [
-                'USER_LOGIN' => $this->parameters->getAuth('login'),
-                'USER_HASH' => $this->parameters->getAuth('apikey'),
-            ]), null, '&');
-        } else {
-            $query = http_build_query(array_merge($this->parameters->getGet(), [
-                'login' => $this->parameters->getAuth('login'),
-                'api_key' => $this->parameters->getAuth('apikey'),
-            ]), null, '&');
-        }
-
-        return sprintf('https://%s%s?%s', $this->parameters->getAuth('domain'), $url, $query);
+        return sprintf('https://%s%s', $this->parameters->getAuth('domain'), $url);
     }
 
     /**
